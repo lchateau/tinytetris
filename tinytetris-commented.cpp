@@ -50,7 +50,7 @@ void set_piece(int x, int y, int r, int v) {
 }
 
 // move a piece from old (p*) coords to new
-int update_piece() {
+void update_piece() {
   set_piece(px, py, pr, 0);
   set_piece(px = x, py = y, pr = r, p + 1);
 }
@@ -107,15 +107,20 @@ int do_tick() {
 
 // main game loop with wasd input checking
 void runloop() {
+  char left = 'q';
+  char right = 'd';
+  char bottom = 's';
+  char turn = 'z';
+  char exit = 'e';
   while (do_tick()) {
     usleep(10000);
-    if ((c = getch()) == 'a' && x > 0 && !check_hit(x - 1, y, r)) {
+    if ((c = getch()) == left && x > 0 && !check_hit(x - 1, y, r)) {
       x--;
     }
-    if (c == 'd' && x + NUM(r, 16) < 9 && !check_hit(x + 1, y, r)) {
+    if (c == right && x + NUM(r, 16) < 9 && !check_hit(x + 1, y, r)) {
       x++;
     }
-    if (c == 's') {
+    if (c == bottom) {
       while (!check_hit(x, y + 1, r)) {
         y++;
         update_piece();
@@ -123,7 +128,7 @@ void runloop() {
       remove_line();
       new_piece();
     }
-    if (c == 'w') {
+    if (c == turn) {
       ++r %= 4;
       while (x + NUM(r, 16) > 9) {
         x--;
@@ -133,7 +138,7 @@ void runloop() {
         r = pr;
       }
     }
-    if (c == 'q') {
+    if (c == exit) {
       return;
     }
     update_piece();
@@ -158,4 +163,5 @@ int main() {
   box(stdscr, 0, 0);
   runloop();
   endwin();
+  return 0;
 }
